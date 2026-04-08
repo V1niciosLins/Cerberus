@@ -1,0 +1,11 @@
+build/
+out/
+bin/
+CMakeFiles/
+
+# Lixo do editor/IDE
+.vscode/
+.idea/
+*.swp
+
+mocks/cerberus.conf

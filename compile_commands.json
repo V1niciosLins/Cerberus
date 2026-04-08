@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/vinicios/Documentos/Projects/Cerberus/build",
+  "command": "/usr/sbin/c++ -I/home/vinicios/Documentos/Projects/Cerberus/include -std=gnu++23 -Wall -Wextra -Wpedantic -Werror -O3 -o CMakeFiles/cerberus.dir/src/main.cpp.o -c /home/vinicios/Documentos/Projects/Cerberus/src/main.cpp",
+  "file": "/home/vinicios/Documentos/Projects/Cerberus/src/main.cpp",
+  "output": "/home/vinicios/Documentos/Projects/Cerberus/build/CMakeFiles/cerberus.dir/src/main.cpp.o"
+}
+]
