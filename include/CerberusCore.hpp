@@ -8,7 +8,8 @@
 #include <thread>
 #include <vector>
 
-inline static constexpr std::string_view CERBERUS_PATH{"./mocks/cerberus.conf"};
+inline static constexpr std::string_view CERBERUS_PATH{
+    "/etc/cerberus/cerberus.conf"};
 
 struct Conf {
   std::string process_name;
