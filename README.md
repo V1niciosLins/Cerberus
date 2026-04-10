@@ -1,6 +1,6 @@
 # Cerberus
 
-Daemon de monitoramento de memória para sistemas Linux, escrito em C++20. O sistema opera em baixo nível, varrendo o `procfs` nativamente e reagindo a alterações de configuração em tempo real via `inotify`, sem a necessidade de reiniciar o serviço.
+Daemon de monitoramento de memória para sistemas Linux, escrito em C++23. O sistema opera em baixo nível, varrendo o `procfs` nativamente e reagindo a alterações de configuração em tempo real via `inotify`, sem a necessidade de reiniciar o serviço.
 
 ## Arquitetura
 
