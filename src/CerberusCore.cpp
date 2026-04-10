@@ -130,6 +130,7 @@ void Cerberus::watch_proc() {
 
   watch_proc_thread = std::thread([this]() {
     std::vector<Conf> local_confs;
+    std::vector<Infractor> infractors{};
     long page_size = sysconf(_SC_PAGESIZE);
 
     char path_buffer[512];
@@ -143,7 +144,6 @@ void Cerberus::watch_proc() {
     DIR *dir = opendir("/proc");
     while (wp_running && !has_an_error) {
       rewinddir(dir);
-
       if (has_update) {
 
         {
@@ -152,6 +152,10 @@ void Cerberus::watch_proc() {
         }
         has_update = false;
       }
+
+      std::erase_if(infractors, [](const Infractor &inf) {
+        return (kill(inf.pid, 0) == -1 && errno == ESRCH);
+      });
 
       while (auto entry = readdir(dir)) {
         if (!(entry->d_name[0] >= '0' && entry->d_name[0] <= '9'))
@@ -194,7 +198,8 @@ void Cerberus::watch_proc() {
         snprintf(path_buffer, sizeof(path_buffer), "/proc/%s/statm",
                  entry->d_name);
         int s_fd = open(path_buffer, O_RDONLY);
-
+        if (s_fd < 0)
+          continue;
         ssize_t s_bytes = read(s_fd, data_buffer, sizeof(data_buffer) - 1);
 
         close(s_fd);
@@ -231,13 +236,34 @@ void Cerberus::watch_proc() {
 
           if (convert_result.ec == std::errc()) {
 
-            if (kill(pid_alvo, SIGTERM) == 0) {
-              std::print("[ CERBERUS ] Morte confirmada: PID {}\n", pid_alvo);
+            auto it = std::find_if(infractors.begin(), infractors.end(),
+                                   [pid_alvo, proc_name](const Infractor &inf) {
+                                     return inf.pid == pid_alvo &&
+                                            inf.proc_name == proc_name;
+                                   });
+
+            if (it != infractors.end()) {
+              if (kill(pid_alvo, SIGKILL) == 0) {
+                std::print("[ CERBERUS ] Morte forçada lançada: PID {}\n",
+                           pid_alvo);
+                infractors.erase(it);
+              } else {
+                std::print(stderr,
+                           "[ CERBERUS ] Falha ao executar PID {}. Permissão "
+                           "negada?\n",
+                           pid_alvo);
+              }
             } else {
-              std::print(
-                  stderr,
-                  "[ CERBERUS ] Falha ao executar PID {}. Permissão negada?\n",
-                  pid_alvo);
+              if (kill(pid_alvo, SIGTERM) == 0) {
+                std::print("[ CERBERUS ] Pedido de execução lançado: PID {}\n",
+                           pid_alvo);
+                infractors.push_back({proc_name.data(), pid_alvo});
+              } else {
+                std::print(stderr,
+                           "[ CERBERUS ] Falha ao executar PID {}. Permissão "
+                           "negada?\n",
+                           pid_alvo);
+              }
             }
           }
         }

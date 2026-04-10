@@ -3,9 +3,11 @@ out/
 bin/
 CMakeFiles/
 
-# Lixo do editor/IDE
+
 .vscode/
 .idea/
 *.swp
 
 mocks/cerberus.conf
+Project_view.md
+compile_commands.json

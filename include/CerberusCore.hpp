@@ -15,6 +15,11 @@ struct Conf {
   size_t limite_mb;
 };
 
+struct Infractor {
+  std::string proc_name;
+  int pid;
+};
+
 class Cerberus {
 private:
   std::ifstream ifs;
